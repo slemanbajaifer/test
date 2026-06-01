@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار الحاسب والتقنية - تفاعلي</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #eef2f7 0%, #d9e2ec 100%);
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  max-width: 850px;
+  margin: auto;
+  background: #ffffff;
+  padding: 30px 25px;
+  border-radius: 32px;
+  box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1a4972;
+  font-size: 1.9rem;
+  letter-spacing: -0.3px;
+  border-right: 5px solid #1a4972;
+  padding-right: 18px;
+  width: fit-content;
+  margin-right: auto;
+  margin-left: auto;
+  background: #f0f6fe;
+  padding: 12px 28px;
+  border-radius: 60px;
+  display: inline-block;
+  width: auto;
+}
+
+.progress {
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 40px;
+  overflow: hidden;
+  margin: 25px 0 18px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #1a6d9c, #1e88b0);
+  border-radius: 40px;
+  transition: width 0.25s ease;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: 500;
+  background: #f8fafc;
+  padding: 10px 18px;
+  border-radius: 50px;
+  color: #1e4663;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.card {
+  border: 1px solid #e9edf2;
+  padding: 25px 22px;
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+  transition: 0.2s;
+}
+
+.question {
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.65;
+  color: #0a2f44;
+  background: #f9fbfd;
+  padding: 15px 18px;
+  border-radius: 24px;
+  margin-bottom: 12px;
+}
+
+.options {
+  margin-top: 24px;
+  display: grid;
+  gap: 14px;
+}
+
+.option {
+  padding: 14px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 60px;
+  background: #f9fbfe;
+  cursor: pointer;
+  font-size: 1rem;
+  text-align: right;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: #1f4662;
+}
+
+.option:hover {
+  background: #e6f0fa;
+  border-color: #9bc0da;
+  transform: scale(0.99);
+}
+
+.correct {
+  background: #c8f0d1 !important;
+  border-color: #2b7e3a !important;
+  color: #155724;
+  font-weight: bold;
+}
+
+.wrong {
+  background: #ffe0db !important;
+  border-color: #cd5b4b !important;
+  color: #a1220a;
+  text-decoration: line-through;
+}
+
+.feedback {
+  margin-top: 22px;
+  padding: 14px 18px;
+  border-radius: 24px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.5;
+  display: none;
+  border-right: 5px solid;
+}
+
+.feedback.show {
+  display: block;
+}
+
+.feedback.correct {
+  background: #e1f7e8;
+  color: #0a5c2e;
+  border-right-color: #2e8b57;
+}
+
+.feedback.wrong {
+  background: #ffe6e3;
+  color: #b13e2d;
+  border-right-color: #d9534f;
+}
+
+.navigation {
+  margin-top: 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  background: #1e6f9f;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: 0.2s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn:hover:not(:disabled) {
+  background: #0f5883;
+  transform: translateY(-2px);
+}
+
+.btn:disabled {
+  background: #bac8d9;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.result {
+  text-align: center;
+  display: none;
+  background: #fefdf8;
+  border-radius: 40px;
+  padding: 20px;
+  margin-top: 15px;
+}
+
+.result h2 {
+  color: #1d5a8b;
+  margin-bottom: 25px;
+  font-size: 2rem;
+}
+
+.score {
+  font-size: 70px;
+  font-weight: 800;
+  color: #1c6d9b;
+  margin-bottom: 12px;
+  background: #eef3fc;
+  display: inline-block;
+  padding: 10px 35px;
+  border-radius: 100px;
+}
+
+.grade {
+  font-size: 1.7rem;
+  margin-bottom: 30px;
+  font-weight: 500;
+  color: #2c3e66;
+}
+
+.restart {
+  padding: 14px 38px;
+  background: #1e6f9f;
+  color: white;
+  border: none;
+  border-radius: 60px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.restart:hover {
+  background: #0b5078;
+  transform: scale(0.97);
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>💻 اختبار الحاسب والتقنية</h1>
+
+  <div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="info">
+    <span id="counter">السؤال 1 من 60</span>
+    <span id="scoreLive">⭐ الدرجة: 0</span>
+  </div>
+
+  <div id="quizBox" class="card">
+    <div id="question" class="question"></div>
+    <div id="options" class="options"></div>
+    <div id="feedback" class="feedback"></div>
+  </div>
+
+  <div class="navigation">
+    <button class="btn" id="prevBtn">◀ السابق</button>
+    <button class="btn" id="nextBtn">التالي ▶</button>
+  </div>
+
+  <div class="result" id="resultBox">
+    <h2>📊 النتيجة النهائية</h2>
+    <div class="score" id="finalScore"></div>
+    <div class="grade" id="grade"></div>
+    <button class="restart" id="restartBtn">🔄 إعادة الاختبار</button>
+  </div>
+
+</div>
+
+<script>
+// ======================== قائمة الأسئلة (صحيحة وكاملة) ========================
+const questions = [
+  { q: "يمكن استعادة الملفات الموجودة في سلة المحذوفات.", type: "tf", correct: "صح", explanation: "يمكن استعادة الملفات طالما لم يتم حذفها نهائياً." },
+  { q: "امتداد ملفات Word الحديث هو DOCX.", type: "tf", correct: "صح", explanation: "DOCX هو الامتداد الافتراضي لملفات Word الحديثة." },
+  { q: "امتداد ملفات Excel هو DOCX.", type: "tf", correct: "خطأ", explanation: "امتداد Excel هو XLSX." },
+  { q: "زر Home ينقل المؤشر إلى بداية السطر.", type: "tf", correct: "صح", explanation: "زر Home ينقل المؤشر لبداية السطر." },
+  { q: "وحدة التحكم والسيطرة هي التي تقوم بالعمليات الحسابية.", type: "tf", correct: "خطأ", explanation: "العمليات الحسابية تنفذها وحدة الحساب والمنطق ALU." },
+  { q: "الخط الأحمر المتعرج أسفل الكلمة في Word يدل على خطأ إملائي.", type: "tf", correct: "صح", explanation: "الخط الأحمر يدل غالباً على خطأ إملائي." },
+  { q: "تسمى عملية تنزيل الملفات من الإنترنت إلى جهازك Download.", type: "tf", correct: "صح", explanation: "Download تعني تنزيل الملفات." },
+  { q: "الشبكات تسمح بمشاركة الطابعات بين عدة أجهزة.", type: "tf", correct: "صح", explanation: "من فوائد الشبكات مشاركة الموارد." },
+  { q: "تستخدم الشبكة المحلية LAN في نطاق جغرافي صغير.", type: "tf", correct: "صح", explanation: "LAN تستخدم في المباني المتقاربة." },
+  { q: "الطابعة من وحدات الإدخال.", type: "tf", correct: "خطأ", explanation: "الطابعة من وحدات الإخراج." },
+  { q: "نظام التشغيل من البرمجيات.", type: "tf", correct: "صح", explanation: "نظام التشغيل Software." },
+  { q: "Windows من أنظمة التشغيل.", type: "tf", correct: "صح", explanation: "ويندوز نظام تشغيل." },
+  { q: "يستخدم Caps Lock لكتابة الأحرف الإنجليزية الكبيرة.", type: "tf", correct: "صح", explanation: "يقوم بتثبيت الأحرف الكبيرة." },
+  { q: "يمكن أن ينتقل الفيروس للحاسب بمجرد تغيير الشاشة.", type: "tf", correct: "خطأ", explanation: "تغيير الشاشة لا ينقل الفيروسات." },
+  { q: "الشبكة هي مجموعة من أجهزة الحاسب المتصلة ببعضها.", type: "tf", correct: "صح", explanation: "هذا تعريف الشبكات." },
+  { q: "البايت يساوي 16 بت.", type: "tf", correct: "خطأ", explanation: "البايت يساوي 8 بتات." },
+  { q: "أفضل وسيلة للحماية من الفيروسات هي استخدام مضاد فيروسات.", type: "tf", correct: "صح", explanation: "مضاد الفيروسات يساعد في الحماية." },
+  { q: "أصغر وحدة لقياس البيانات هي البت.", type: "tf", correct: "صح", explanation: "البت أصغر وحدة بيانات." },
+  { q: "لا يمكن تعديل محتويات ROM بسهولة.", type: "tf", correct: "صح", explanation: "ROM للقراءة فقط." },
+  { q: "لحفظ ملف بسرعة نستخدم Ctrl + S.", type: "tf", correct: "صح", explanation: "اختصار الحفظ." },
+  { q: "الفيروسات برامج قادرة على نسخ نفسها وإتلاف الملفات.", type: "tf", correct: "صح", explanation: "من خصائص الفيروسات القدرة على الانتشار وإلحاق الضرر." },
+  { q: "عناوين المواقع التعليمية تنتهي غالباً باللاحقة edu.", type: "tf", correct: "صح", explanation: "edu تستخدم غالباً للمؤسسات التعليمية." },
+  { q: "عناوين المواقع الحكومية تنتهي غالباً باللاحقة gov.", type: "tf", correct: "صح", explanation: "gov مخصصة للجهات الحكومية." },
+  { q: "الويندوز يعتبر من العتاد.", type: "tf", correct: "خطأ", explanation: "الويندوز من البرمجيات ويعد نظام تشغيل." },
+  { q: "الصندوق المعدني الذي يحتوي على المكونات الأساسية للحاسب يسمى وحدة النظام.", type: "tf", correct: "صح", explanation: "وحدة النظام تحتوي على أغلب المكونات الداخلية." },
+  { q: "تقاس سرعة المعالج بالهرتز ومضاعفاته.", type: "tf", correct: "صح", explanation: "مثل MHz و GHz." },
+  { q: "تقاس سعة الذاكرة بوحدة الهرتز.", type: "tf", correct: "خطأ", explanation: "تقاس بالبايت ومضاعفاته." },
+  { q: "RAM تفقد محتوياتها عند انقطاع الكهرباء.", type: "tf", correct: "صح", explanation: "لأنها ذاكرة مؤقتة." },
+  { q: "ROM تحتفظ بمحتوياتها بعد إيقاف تشغيل الجهاز.", type: "tf", correct: "صح", explanation: "لأنها ذاكرة دائمة." },
+  { q: "أقراص الليزر من وحدات التخزين الخارجية.", type: "tf", correct: "صح", explanation: "تستخدم لحفظ البيانات." },
+  { q: "من طرق أمن المعلومات إنشاء نسخ احتياطية للبيانات.", type: "tf", correct: "صح", explanation: "النسخ الاحتياطي يحمي من فقدان البيانات." },
+  { q: "لوحة المفاتيح من وحدات الإدخال.", type: "tf", correct: "صح", explanation: "تستخدم لإدخال البيانات للحاسب." },
+  { q: "الشاشة من وحدات الإخراج.", type: "tf", correct: "صح", explanation: "تعرض النتائج للمستخدم." },
+  { q: "الماسح الضوئي من وحدات الإدخال.", type: "tf", correct: "صح", explanation: "يقوم بإدخال الصور والوثائق." },
+  { q: "الميغابايت أكبر من الكيلوبايت.", type: "tf", correct: "صح", explanation: "1 MB = 1024 KB." },
+  { q: "الكيلوبايت أكبر من الجيجابايت.", type: "tf", correct: "خطأ", explanation: "الجيجابايت أكبر." },
+  { q: "يمكن استخدام أكثر من وحدة إخراج مع الحاسب.", type: "tf", correct: "صح", explanation: "مثل الشاشة والطابعة معاً." },
+  { q: "أمر Cut يستخدم لنقل العنصر من مكان إلى آخر.", type: "tf", correct: "صح", explanation: "يقص العنصر تمهيداً للصقه." },
+  { q: "أمر Copy يحذف العنصر الأصلي.", type: "tf", correct: "خطأ", explanation: "ينسخ فقط دون حذف." },
+  { q: "Ctrl + C يستخدم للنسخ.", type: "tf", correct: "صح", explanation: "اختصار النسخ." },
+  { q: "Ctrl + V يستخدم للصق.", type: "tf", correct: "صح", explanation: "اختصار اللصق." },
+  { q: "Ctrl + X يستخدم للقص.", type: "tf", correct: "صح", explanation: "اختصار القص." },
+  { q: "Ctrl + P يستخدم للطباعة.", type: "tf", correct: "صح", explanation: "يفتح نافذة الطباعة." },
+  { q: "القرص الصلب من وحدات التخزين.", type: "tf", correct: "صح", explanation: "يستخدم لحفظ البيانات بشكل دائم." },
+  { q: "القرص المرن يعد من وحدات التخزين.", type: "tf", correct: "صح", explanation: "وليس وحدة إخراج." },
+  { q: "قاعدة البيانات هي مجموعة بيانات منظمة.", type: "tf", correct: "صح", explanation: "تسهل تخزين واسترجاع البيانات." },
+  { q: "الجداول هي المكون الأساسي لقاعدة البيانات.", type: "tf", correct: "صح", explanation: "يتم تخزين البيانات داخل الجداول." },
+  { q: "السجل يتكون من مجموعة حقول.", type: "tf", correct: "صح", explanation: "السجل عبارة عن صف يحتوي حقولاً." },
+  { q: "المفتاح الأساسي يميز السجلات عن بعضها.", type: "tf", correct: "صح", explanation: "يمنع التكرار ويحدد السجل بشكل فريد." },
+  { q: "يتم إنشاء علاقة بين الجداول لربط البيانات بينها.", type: "tf", correct: "صح", explanation: "لتسهيل الاستعلام واستخراج المعلومات." },
+  { q: "التكامل المرجعي يحافظ على ترابط البيانات بين الجداول.", type: "tf", correct: "صح", explanation: "يمنع فقدان الترابط بين السجلات." },
+  { q: "برنامج Outlook يستخدم لإدارة البريد الإلكتروني والمواعيد.", type: "tf", correct: "صح", explanation: "يوفر البريد والتقويم والمهام." },
+  { q: "يمكن تعديل المهام بعد إدخالها في Outlook.", type: "tf", correct: "صح", explanation: "يمكن تعديلها في أي وقت." },
+  { q: "يمكن تحديد وقت بداية ونهاية الموعد في Outlook.", type: "tf", correct: "صح", explanation: "من خصائص جدولة المواعيد." },
+  { q: "Windows 10 من أنظمة التشغيل.", type: "tf", correct: "صح", explanation: "أحد إصدارات ويندوز." },
+  { q: "تغيير خلفية سطح المكتب يتم من إعدادات التخصيص.", type: "tf", correct: "صح", explanation: "من خيار Personalization." },
+  { q: "لغات البرمجة عبارة عن رموز وقواعد لكتابة الأوامر.", type: "tf", correct: "صح", explanation: "تستخدم لتطوير البرامج." },
+  { q: "استقبال البيانات من الحاسب يسمى عملية الإخراج.", type: "tf", correct: "صح", explanation: "الإخراج هو عرض النتائج للمستخدم." },
+  { q: "1 بايت يساوي 5 بت.", type: "tf", correct: "خطأ", explanation: "1 بايت = 8 بت." },
+  { q: "يمكن تحديد ملفات متفرقة باستخدام Ctrl مع الفأرة.", type: "tf", correct: "صح", explanation: "لتحديد ملفات غير متجاورة." }
+];
+
+// ======================== متغيرات التطبيق ========================
+let currentIndex = 0;             // السؤال الحالي
+let userAnswers = new Array(questions.length).fill(null);  // الإجابات المسجلة (صح/خطأ أو null)
+
+// عناصر DOM
+const questionEl = document.getElementById("question");
+const optionsContainer = document.getElementById("options");
+const feedbackDiv = document.getElementById("feedback");
+const counterSpan = document.getElementById("counter");
+const scoreSpan = document.getElementById("scoreLive");
+const progressBar = document.getElementById("progressBar");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const quizBox = document.getElementById("quizBox");
+const resultBox = document.getElementById("resultBox");
+const finalScoreSpan = document.getElementById("finalScore");
+const gradeSpan = document.getElementById("grade");
+const restartBtn = document.getElementById("restartBtn");
+
+// ========== وظيفة حساب الدرجة بناءً على userAnswers ==========
+function computeScore() {
+  let totalScore = 0;
+  for (let i = 0; i < questions.length; i++) {
+    if (userAnswers[i] !== null && userAnswers[i] === questions[i].correct) {
+      totalScore++;
+    }
+  }
+  return totalScore;
+}
+
+// تحديث عرض الدرجة + شريط التقدم + عداد السؤال
+function updateStatsAndProgress() {
+  const currentScore = computeScore();
+  scoreSpan.textContent = `⭐ الدرجة: ${currentScore}`;
+  counterSpan.textContent = `السؤال ${currentIndex + 1} من ${questions.length}`;
+  const percent = ((currentIndex + 1) / questions.length) * 100;
+  progressBar.style.width = `${percent}%`;
+}
+
+// إعادة تحميل السؤال الحالي مع عرض الإجابة السابقة إن وجدت
+function renderCurrentQuestion() {
+  const qData = questions[currentIndex];
+  if (!qData) return;
+
+  // عرض نص السؤال
+  questionEl.textContent = qData.q;
+  
+  // إعادة بناء خيارات الإجابة
+  optionsContainer.innerHTML = "";
+  feedbackDiv.className = "feedback";
+  feedbackDiv.style.display = "none";
+  
+  let opts = ["صح", "خطأ"]; // جميع الأسئلة من النوع صح/خطأ حسب البيانات
+  
+  opts.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = opt;
+    btn.setAttribute("data-value", opt);
+    
+    // إذا كان السؤال قد تمت الإجابة عليه مسبقاً نعطيه الحالة المناسبة ونعطله
+    const savedAnswer = userAnswers[currentIndex];
+    if (savedAnswer !== null) {
+      btn.disabled = true;
+      if (opt === qData.correct) {
+        btn.classList.add("correct");
+      }
+      if (opt === savedAnswer && savedAnswer !== qData.correct) {
+        btn.classList.add("wrong");
+      }
+      if (opt === savedAnswer && savedAnswer === qData.correct) {
+        btn.classList.add("correct");
+      }
+    } else {
+      btn.disabled = false;
+      btn.onclick = (e) => handleAnswer(opt, btn);
+    }
+    
+    optionsContainer.appendChild(btn);
+  });
+  
+  // إظهار التغذية الراجعة إذا كان السؤال قد تمت الإجابة عليه مسبقاً
+  if (userAnswers[currentIndex] !== null) {
+    const chosen = userAnswers[currentIndex];
+    const isCorrect = (chosen === qData.correct);
+    if (isCorrect) {
+      feedbackDiv.textContent = `✔ إجابة صحيحة. ${qData.explanation ? qData.explanation : ""}`;
+      feedbackDiv.className = "feedback correct show";
+    } else {
+      feedbackDiv.textContent = `✖ خطأ. الإجابة الصحيحة: ${qData.correct}. ${qData.explanation ? qData.explanation : ""}`;
+      feedbackDiv.className = "feedback wrong show";
+    }
+    feedbackDiv.style.display = "block";
+  } else {
+    feedbackDiv.style.display = "none";
+    feedbackDiv.className = "feedback";
+  }
+  
+  // تحديث أزرار التنقل
+  prevBtn.disabled = (currentIndex === 0);
+  const isCurrentAnswered = (userAnswers[currentIndex] !== null);
+  nextBtn.disabled = !isCurrentAnswered;
+  
+  // تحديث الإحصائيات
+  updateStatsAndProgress();
+}
+
+// معالج اختيار الإجابة
+function handleAnswer(selectedValue, buttonElement) {
+  // منع التحديد المزدوج
+  if (userAnswers[currentIndex] !== null) return;
+  
+  const currentQ = questions[currentIndex];
+  const isAnswerCorrect = (selectedValue === currentQ.correct);
+  
+  // حفظ الإجابة
+  userAnswers[currentIndex] = selectedValue;
+  
+  // تعطيل جميع الأزرار وتلوينها
+  const allBtns = document.querySelectorAll(".option");
+  allBtns.forEach(btn => {
+    btn.disabled = true;
+    const val = btn.getAttribute("data-value");
+    if (val === currentQ.correct) {
+      btn.classList.add("correct");
+    } else if (val === selectedValue && !isAnswerCorrect) {
+      btn.classList.add("wrong");
+    } else if (val === selectedValue && isAnswerCorrect) {
+      btn.classList.add("correct");
+    }
+  });
+  
+  // عرض التغذية الراجعة
+  if (isAnswerCorrect) {
+    feedbackDiv.textContent = `✔ إجابة صحيحة! ${currentQ.explanation || ""}`;
+    feedbackDiv.className = "feedback correct show";
+  } else {
+    feedbackDiv.textContent = `✖ إجابة خاطئة. الإجابة الصحيحة: ${currentQ.correct}. ${currentQ.explanation || ""}`;
+    feedbackDiv.className = "feedback wrong show";
+  }
+  feedbackDiv.style.display = "block";
+  
+  // تحديث الدرجة وشريط التقدم
+  updateStatsAndProgress();
+  
+  // تمكين زر التالي لأنه تمت الإجابة
+  nextBtn.disabled = false;
+}
+
+// الانتقال للسؤال التالي
+function goToNext() {
+  if (currentIndex < questions.length - 1) {
+    currentIndex++;
+    renderCurrentQuestion();
+  } else {
+    // اكتمل الاختبار
+    showFinalResult();
+  }
+}
+
+// الانتقال للسؤال السابق
+function goToPrev() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderCurrentQuestion();
+  }
+}
+
+// عرض نتيجة الاختبار النهائية
+function showFinalResult() {
+  // إخفاء واجهة الأسئلة وإظهار النتيجة
+  quizBox.style.display = "none";
+  document.querySelector(".navigation").style.display = "none";
+  
+  const totalScoreFinal = computeScore();
+  const percentTotal = Math.round((totalScoreFinal / questions.length) * 100);
+  
+  finalScoreSpan.textContent = `${totalScoreFinal} / ${questions.length}`;
+  
+  let gradeMessage = "";
+  if (percentTotal >= 90) gradeMessage = "ممتاز 🏆";
+  else if (percentTotal >= 75) gradeMessage = "جيد جداً ⭐";
+  else if (percentTotal >= 60) gradeMessage = "جيد 👍";
+  else gradeMessage = "يحتاج مراجعة 📚";
+  
+  gradeSpan.textContent = `${gradeMessage} - ${percentTotal}%`;
+  resultBox.style.display = "block";
+}
+
+// إعادة ضبط الاختبار بالكامل
+function resetQuiz() {
+  // إعادة تعيين البيانات
+  userAnswers = new Array(questions.length).fill(null);
+  currentIndex = 0;
+  
+  // إظهار صندوق الأسئلة وإخفاء النتيجة
+  quizBox.style.display = "block";
+  document.querySelector(".navigation").style.display = "flex";
+  resultBox.style.display = "none";
+  
+  // إعادة تعيين الشريط والعدادات
+  updateStatsAndProgress();
+  renderCurrentQuestion();
+}
+
+// ربط الأحداث
+prevBtn.onclick = goToPrev;
+nextBtn.onclick = goToNext;
+restartBtn.onclick = () => resetQuiz();
+
+// بدء الاختبار لأول مرة
+renderCurrentQuestion();
+
+// إضافة تحسين: في حال عدم ظهور أي سؤال لأي سبب نتأكد من ظهوره
+window.addEventListener("load", () => {
+  if (questions.length > 0 && questionEl.innerText.trim() === "") {
+    renderCurrentQuestion();
+  }
+});
+</script>
+</body>
+</html>
