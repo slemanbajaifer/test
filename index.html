@@ -247,6 +247,79 @@ h1 {
   background: #0b5078;
   transform: scale(0.97);
 }
+
+/* ===== قسم مراجعة الأسئلة الخاطئة ===== */
+.review-section {
+  text-align: right;
+  margin-top: 35px;
+}
+
+.review-section h3 {
+  text-align: center;
+  color: #a1220a;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  background: #ffece9;
+  padding: 10px 20px;
+  border-radius: 50px;
+  display: inline-block;
+  width: 100%;
+}
+
+.review-all-correct {
+  text-align: center;
+  color: #0a5c2e;
+  background: #e1f7e8;
+  padding: 16px 20px;
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.review-item {
+  border: 1px solid #f1d8d3;
+  background: #fffaf8;
+  border-radius: 22px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.review-q {
+  font-weight: 700;
+  color: #0a2f44;
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.review-line {
+  padding: 6px 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.review-your-answer {
+  color: #a1220a;
+}
+
+.review-your-answer span {
+  text-decoration: line-through;
+  font-weight: 600;
+}
+
+.review-correct-answer {
+  color: #0a5c2e;
+  font-weight: 600;
+}
+
+.review-explain {
+  margin-top: 8px;
+  color: #4a5a68;
+  font-size: 0.9rem;
+  background: #f4f8fb;
+  padding: 10px 14px;
+  border-radius: 16px;
+}
 </style>
 </head>
 <body>
@@ -280,6 +353,8 @@ h1 {
     <div class="score" id="finalScore"></div>
     <div class="grade" id="grade"></div>
     <button class="restart" id="restartBtn">🔄 إعادة الاختبار</button>
+
+    <div class="review-section" id="reviewSection"></div>
   </div>
 
 </div>
@@ -779,6 +854,7 @@ const resultBox = document.getElementById("resultBox");
 const finalScoreSpan = document.getElementById("finalScore");
 const gradeSpan = document.getElementById("grade");
 const restartBtn = document.getElementById("restartBtn");
+const reviewSection = document.getElementById("reviewSection");
 
 // ========== وظيفة حساب الدرجة بناءً على userAnswers ==========
 function computeScore() {
@@ -939,6 +1015,66 @@ function goToPrev() {
   }
 }
 
+// بناء قسم مراجعة الأسئلة الخاطئة
+function renderWrongAnswersReview() {
+  reviewSection.innerHTML = "";
+
+  // جمع الأسئلة التي أُجيب عليها بشكل خاطئ (أو لم تُجب)
+  const wrongList = [];
+  for (let i = 0; i < questions.length; i++) {
+    const q = questions[i];
+    const given = userAnswers[i];
+    if (given === null || given !== q.correct) {
+      wrongList.push({ index: i, question: q, given: given });
+    }
+  }
+
+  if (wrongList.length === 0) {
+    const allCorrectDiv = document.createElement("div");
+    allCorrectDiv.className = "review-all-correct";
+    allCorrectDiv.textContent = "🎉 ما شاء الله! أجبت على جميع الأسئلة بشكل صحيح، لا توجد أخطاء لمراجعتها.";
+    reviewSection.appendChild(allCorrectDiv);
+    return;
+  }
+
+  const heading = document.createElement("h3");
+  heading.textContent = `📝 مراجعة الأسئلة الخاطئة (${wrongList.length})`;
+  reviewSection.appendChild(heading);
+
+  wrongList.forEach(item => {
+    const box = document.createElement("div");
+    box.className = "review-item";
+
+    const qLine = document.createElement("div");
+    qLine.className = "review-q";
+    qLine.textContent = `${item.index + 1}. ${item.question.q}`;
+    box.appendChild(qLine);
+
+    const yourLine = document.createElement("div");
+    yourLine.className = "review-line review-your-answer";
+    if (item.given === null) {
+      yourLine.innerHTML = `إجابتك: <span>لم تتم الإجابة</span>`;
+    } else {
+      yourLine.innerHTML = `إجابتك: <span>${item.given}</span>`;
+    }
+    box.appendChild(yourLine);
+
+    const correctLine = document.createElement("div");
+    correctLine.className = "review-line review-correct-answer";
+    correctLine.textContent = `الإجابة الصحيحة: ${item.question.correct}`;
+    box.appendChild(correctLine);
+
+    if (item.question.explanation) {
+      const explainLine = document.createElement("div");
+      explainLine.className = "review-explain";
+      explainLine.textContent = item.question.explanation;
+      box.appendChild(explainLine);
+    }
+
+    reviewSection.appendChild(box);
+  });
+}
+
 // عرض نتيجة الاختبار النهائية
 function showFinalResult() {
   // إخفاء واجهة الأسئلة وإظهار النتيجة
@@ -957,6 +1093,10 @@ function showFinalResult() {
   else gradeMessage = "يحتاج مراجعة 📚";
 
   gradeSpan.textContent = `${gradeMessage} - ${percentTotal}%`;
+
+  // عرض مراجعة الأسئلة الخاطئة
+  renderWrongAnswersReview();
+
   resultBox.style.display = "block";
 }
 
@@ -971,6 +1111,7 @@ function resetQuiz() {
   quizBox.style.display = "block";
   document.querySelector(".navigation").style.display = "flex";
   resultBox.style.display = "none";
+  reviewSection.innerHTML = "";
 
   // إعادة تعيين الشريط والعدادات
   updateStatsAndProgress();
