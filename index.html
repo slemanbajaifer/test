@@ -198,6 +198,47 @@ h1 {
   opacity: 0.7;
 }
 
+/* ===== قائمة الانتقال المباشر ===== */
+.question-jumper {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #f8fafc;
+  padding: 12px 18px;
+  border-radius: 50px;
+  color: #1e4663;
+  font-weight: 600;
+}
+
+.question-jumper label {
+  font-size: 15px;
+}
+
+#questionSelect {
+  border: 1px solid #cbd5e1;
+  background: white;
+  color: #1e4663;
+  border-radius: 30px;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  min-width: 130px;
+  text-align: center;
+}
+
+#questionSelect:hover {
+  border-color: #1e6f9f;
+}
+
+#questionSelect:focus {
+  border-color: #1e6f9f;
+  box-shadow: 0 0 0 3px rgba(30, 111, 159, 0.12);
+}
+
 .result {
   text-align: center;
   display: none;
@@ -320,8 +361,28 @@ h1 {
   padding: 10px 14px;
   border-radius: 16px;
 }
+
+@media (max-width: 600px) {
+  .question-jumper {
+    flex-direction: column;
+    border-radius: 25px;
+  }
+
+  #questionSelect {
+    width: 100%;
+  }
+
+  .navigation {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
 </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -348,6 +409,12 @@ h1 {
     <button class="btn" id="nextBtn">التالي ▶</button>
   </div>
 
+  <!-- ===== الانتقال المباشر إلى أي سؤال ===== -->
+  <div class="question-jumper">
+    <label for="questionSelect">انتقال مباشر إلى السؤال:</label>
+    <select id="questionSelect"></select>
+  </div>
+
   <div class="result" id="resultBox">
     <h2>📊 النتيجة النهائية</h2>
     <div class="score" id="finalScore"></div>
@@ -360,10 +427,13 @@ h1 {
 </div>
 
 <script>
+
 // ======================== قائمة الأسئلة ========================
 // النوع "mcq": يعرض مصطلحاً ويطلب اختيار التعريف الصحيح من عدة خيارات
-// النوع "tf": سؤال صح/خطأ (عدد قليل فقط)
+// النوع "tf": سؤال صح/خطأ
+
 const questions = [
+
   { type: "mcq", q: "ما تعريف ROM؟", options: [
       "ذاكرة للقراءة فقط تحتفظ بالبيانات حتى بعد إيقاف تشغيل الجهاز",
       "ذاكرة مؤقتة تفقد بياناتها عند انقطاع الكهرباء",
@@ -572,20 +642,20 @@ const questions = [
     ], correct: "حقل يميز كل سجل عن غيره ولا يتكرر في الجدول",
     explanation: "المفتاح الأساسي يضمن عدم تكرار السجلات." },
 
-{ type: "mcq", q: "من مزايا برنامج الوورد؟", options: [ 
-      "إدراج الحواشي السفلية", 
-      "إنشاء قواعد البيانات", 
-      "تصميم أنظمة التشغيل", 
-      "إدارة مكونات الحاسب" 
-    ], correct: "إدراج الحواشي السفلية", 
+  { type: "mcq", q: "من مزايا برنامج الوورد؟", options: [
+      "إدراج الحواشي السفلية",
+      "إنشاء قواعد البيانات",
+      "تصميم أنظمة التشغيل",
+      "إدارة مكونات الحاسب"
+    ], correct: "إدراج الحواشي السفلية",
     explanation: "من مزايا برنامج الوورد إمكانية إدراج الحواشي السفلية في المستند." },
 
-{ type: "mcq", q: "كيف يتم الكشف عن الأخطاء اللغوية في برنامج الوورد؟", options: [ 
-      "عن طريق التدقيق اللغوي", 
-      "عن طريق إدراج الجداول", 
-      "عن طريق تغيير حجم الخط", 
-      "عن طريق إدراج الصور" 
-    ], correct: "عن طريق التدقيق اللغوي", 
+  { type: "mcq", q: "كيف يتم الكشف عن الأخطاء اللغوية في برنامج الوورد؟", options: [
+      "عن طريق التدقيق اللغوي",
+      "عن طريق إدراج الجداول",
+      "عن طريق تغيير حجم الخط",
+      "عن طريق إدراج الصور"
+    ], correct: "عن طريق التدقيق اللغوي",
     explanation: "يتم الكشف عن الأخطاء اللغوية عن طريق ميزة التدقيق اللغوي في برنامج الوورد." },
 
   { type: "mcq", q: "ما تعريف التنزيل (Download)؟", options: [
@@ -787,7 +857,8 @@ const questions = [
     ], correct: "ربط البيانات بين الجداول لتسهيل الاستعلام واستخراج المعلومات",
     explanation: "العلاقات تربط الجداول ببعضها من خلال حقول مشتركة." },
 
-  // ===== أسئلة صح وخطأ (عدد قليل) =====
+  // ===== أسئلة صح وخطأ =====
+
   { type: "tf", q: "يمكن استعادة الملفات الموجودة في سلة المحذوفات.", correct: "صح",
     explanation: "يمكن استعادة الملفات طالما لم يتم حذفها نهائياً." },
 
@@ -826,59 +897,142 @@ const questions = [
 ];
 
 // ======================== متغيرات التطبيق ========================
-let currentIndex = 0;             // السؤال الحالي
-let userAnswers = new Array(questions.length).fill(null);  // الإجابات المسجلة
-let shuffledOptionsCache = new Array(questions.length).fill(null); // ترتيب الخيارات بعد الخلط (لكل سؤال مرة واحدة)
+
+let currentIndex = 0;
+
+let userAnswers = new Array(questions.length).fill(null);
+
+let shuffledOptionsCache = new Array(questions.length).fill(null);
 
 // خلط عناصر مصفوفة بشكل عشوائي (Fisher-Yates)
 function shuffleArray(arr) {
   const result = arr.slice();
+
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
+
     [result[i], result[j]] = [result[j], result[i]];
   }
+
   return result;
 }
 
-// عناصر DOM
+// ======================== عناصر DOM ========================
+
 const questionEl = document.getElementById("question");
+
 const optionsContainer = document.getElementById("options");
+
 const feedbackDiv = document.getElementById("feedback");
+
 const counterSpan = document.getElementById("counter");
+
 const scoreSpan = document.getElementById("scoreLive");
+
 const progressBar = document.getElementById("progressBar");
+
 const prevBtn = document.getElementById("prevBtn");
+
 const nextBtn = document.getElementById("nextBtn");
+
 const quizBox = document.getElementById("quizBox");
+
 const resultBox = document.getElementById("resultBox");
+
 const finalScoreSpan = document.getElementById("finalScore");
+
 const gradeSpan = document.getElementById("grade");
+
 const restartBtn = document.getElementById("restartBtn");
+
 const reviewSection = document.getElementById("reviewSection");
 
-// ========== وظيفة حساب الدرجة بناءً على userAnswers ==========
+// قائمة الانتقال الجديدة
+const questionSelect = document.getElementById("questionSelect");
+
+// ======================== إنشاء قائمة الأسئلة ========================
+
+function buildQuestionSelector() {
+
+  questionSelect.innerHTML = "";
+
+  questions.forEach((q, index) => {
+
+    const option = document.createElement("option");
+
+    option.value = index;
+
+    option.textContent = `السؤال ${index + 1}`;
+
+    questionSelect.appendChild(option);
+
+  });
+
+  questionSelect.value = currentIndex;
+}
+
+// ======================== الانتقال المباشر ========================
+
+questionSelect.addEventListener("change", function () {
+
+  const selectedIndex = parseInt(this.value);
+
+  if (isNaN(selectedIndex)) return;
+
+  if (selectedIndex < 0 || selectedIndex >= questions.length) return;
+
+  currentIndex = selectedIndex;
+
+  renderCurrentQuestion();
+
+});
+
+// ========== وظيفة حساب الدرجة ==========
+
 function computeScore() {
+
   let totalScore = 0;
+
   for (let i = 0; i < questions.length; i++) {
-    if (userAnswers[i] !== null && userAnswers[i] === questions[i].correct) {
+
+    if (
+      userAnswers[i] !== null &&
+      userAnswers[i] === questions[i].correct
+    ) {
       totalScore++;
     }
+
   }
+
   return totalScore;
 }
 
-// تحديث عرض الدرجة + شريط التقدم + عداد السؤال
+// ======================== تحديث الإحصائيات ========================
+
 function updateStatsAndProgress() {
+
   const currentScore = computeScore();
+
   scoreSpan.textContent = `⭐ الدرجة: ${currentScore}`;
-  counterSpan.textContent = `السؤال ${currentIndex + 1} من ${questions.length}`;
-  const percent = ((currentIndex + 1) / questions.length) * 100;
+
+  counterSpan.textContent =
+    `السؤال ${currentIndex + 1} من ${questions.length}`;
+
+  const percent =
+    ((currentIndex + 1) / questions.length) * 100;
+
   progressBar.style.width = `${percent}%`;
+
+  // تحديث القائمة المباشرة
+  questionSelect.value = currentIndex;
 }
 
-// إعادة تحميل السؤال الحالي مع عرض الإجابة السابقة إن وجدت
+// ======================== عرض السؤال ========================
+
 function renderCurrentQuestion() {
+
   const qData = questions[currentIndex];
+
   if (!qData) return;
 
   // عرض نص السؤال
@@ -886,252 +1040,487 @@ function renderCurrentQuestion() {
 
   // إعادة بناء خيارات الإجابة
   optionsContainer.innerHTML = "";
+
   feedbackDiv.className = "feedback";
+
   feedbackDiv.style.display = "none";
 
   // تحديد الخيارات حسب نوع السؤال
   let opts;
+
   if (qData.type === "tf") {
+
     opts = ["صح", "خطأ"];
+
   } else {
-    // نخلط ترتيب الخيارات مرة واحدة فقط لكل سؤال، ونحتفظ بنفس الترتيب عند الرجوع للسؤال
+
+    // نخلط الخيارات مرة واحدة فقط
     if (!shuffledOptionsCache[currentIndex]) {
-      shuffledOptionsCache[currentIndex] = shuffleArray(qData.options);
+
+      shuffledOptionsCache[currentIndex] =
+        shuffleArray(qData.options);
+
     }
+
     opts = shuffledOptionsCache[currentIndex];
   }
 
   opts.forEach(opt => {
+
     const btn = document.createElement("button");
+
     btn.className = "option";
+
     btn.textContent = opt;
+
     btn.setAttribute("data-value", opt);
 
-    // إذا كان السؤال قد تمت الإجابة عليه مسبقاً نعطيه الحالة المناسبة ونعطله
     const savedAnswer = userAnswers[currentIndex];
+
     if (savedAnswer !== null) {
+
       btn.disabled = true;
+
       if (opt === qData.correct) {
         btn.classList.add("correct");
       }
-      if (opt === savedAnswer && savedAnswer !== qData.correct) {
+
+      if (
+        opt === savedAnswer &&
+        savedAnswer !== qData.correct
+      ) {
         btn.classList.add("wrong");
       }
-      if (opt === savedAnswer && savedAnswer === qData.correct) {
+
+      if (
+        opt === savedAnswer &&
+        savedAnswer === qData.correct
+      ) {
         btn.classList.add("correct");
       }
+
     } else {
+
       btn.disabled = false;
-      btn.onclick = (e) => handleAnswer(opt, btn);
+
+      btn.onclick = () => handleAnswer(opt, btn);
+
     }
 
     optionsContainer.appendChild(btn);
+
   });
 
-  // إظهار التغذية الراجعة إذا كان السؤال قد تمت الإجابة عليه مسبقاً
+  // ========================
+  // التغذية الراجعة
+  // ========================
+
   if (userAnswers[currentIndex] !== null) {
+
     const chosen = userAnswers[currentIndex];
-    const isCorrect = (chosen === qData.correct);
+
+    const isCorrect =
+      chosen === qData.correct;
+
     if (isCorrect) {
-      feedbackDiv.textContent = `✔ إجابة صحيحة. ${qData.explanation ? qData.explanation : ""}`;
-      feedbackDiv.className = "feedback correct show";
+
+      feedbackDiv.textContent =
+        `✔ إجابة صحيحة. ${qData.explanation ? qData.explanation : ""}`;
+
+      feedbackDiv.className =
+        "feedback correct show";
+
     } else {
-      feedbackDiv.textContent = `✖ خطأ. الإجابة الصحيحة: ${qData.correct}. ${qData.explanation ? qData.explanation : ""}`;
-      feedbackDiv.className = "feedback wrong show";
+
+      feedbackDiv.textContent =
+        `✖ خطأ. الإجابة الصحيحة: ${qData.correct}. ${qData.explanation ? qData.explanation : ""}`;
+
+      feedbackDiv.className =
+        "feedback wrong show";
     }
+
     feedbackDiv.style.display = "block";
+
   } else {
+
     feedbackDiv.style.display = "none";
+
     feedbackDiv.className = "feedback";
   }
 
-  // تحديث أزرار التنقل
-  prevBtn.disabled = (currentIndex === 0);
-  const isCurrentAnswered = (userAnswers[currentIndex] !== null);
-  nextBtn.disabled = !isCurrentAnswered;
+  // ========================
+  // أزرار التنقل
+  // ========================
 
+  prevBtn.disabled =
+    currentIndex === 0;
+
+  const isCurrentAnswered =
+    userAnswers[currentIndex] !== null;
+
+  nextBtn.disabled =
+    !isCurrentAnswered;
+
+  // ========================
   // تحديث الإحصائيات
+  // ========================
+
   updateStatsAndProgress();
+
 }
 
+// ========================
 // معالج اختيار الإجابة
+// ========================
+
 function handleAnswer(selectedValue, buttonElement) {
+
   // منع التحديد المزدوج
   if (userAnswers[currentIndex] !== null) return;
 
-  const currentQ = questions[currentIndex];
-  const isAnswerCorrect = (selectedValue === currentQ.correct);
+  const currentQ =
+    questions[currentIndex];
+
+  const isAnswerCorrect =
+    selectedValue === currentQ.correct;
 
   // حفظ الإجابة
-  userAnswers[currentIndex] = selectedValue;
+  userAnswers[currentIndex] =
+    selectedValue;
 
   // تعطيل جميع الأزرار وتلوينها
-  const allBtns = document.querySelectorAll(".option");
+  const allBtns =
+    document.querySelectorAll(".option");
+
   allBtns.forEach(btn => {
+
     btn.disabled = true;
-    const val = btn.getAttribute("data-value");
+
+    const val =
+      btn.getAttribute("data-value");
+
     if (val === currentQ.correct) {
+
       btn.classList.add("correct");
-    } else if (val === selectedValue && !isAnswerCorrect) {
+
+    } else if (
+      val === selectedValue &&
+      !isAnswerCorrect
+    ) {
+
       btn.classList.add("wrong");
-    } else if (val === selectedValue && isAnswerCorrect) {
+
+    } else if (
+      val === selectedValue &&
+      isAnswerCorrect
+    ) {
+
       btn.classList.add("correct");
+
     }
+
   });
 
   // عرض التغذية الراجعة
   if (isAnswerCorrect) {
-    feedbackDiv.textContent = `✔ إجابة صحيحة! ${currentQ.explanation || ""}`;
-    feedbackDiv.className = "feedback correct show";
+
+    feedbackDiv.textContent =
+      `✔ إجابة صحيحة! ${currentQ.explanation || ""}`;
+
+    feedbackDiv.className =
+      "feedback correct show";
+
   } else {
-    feedbackDiv.textContent = `✖ إجابة خاطئة. الإجابة الصحيحة: ${currentQ.correct}. ${currentQ.explanation || ""}`;
-    feedbackDiv.className = "feedback wrong show";
+
+    feedbackDiv.textContent =
+      `✖ إجابة خاطئة. الإجابة الصحيحة: ${currentQ.correct}. ${currentQ.explanation || ""}`;
+
+    feedbackDiv.className =
+      "feedback wrong show";
   }
+
   feedbackDiv.style.display = "block";
 
   // تحديث الدرجة وشريط التقدم
   updateStatsAndProgress();
 
-  // تمكين زر التالي لأنه تمت الإجابة
+  // تمكين التالي
   nextBtn.disabled = false;
 }
 
+// ========================
 // الانتقال للسؤال التالي
+// ========================
+
 function goToNext() {
+
   if (currentIndex < questions.length - 1) {
+
     currentIndex++;
+
     renderCurrentQuestion();
+
   } else {
-    // اكتمل الاختبار
+
     showFinalResult();
+
   }
 }
 
+// ========================
 // الانتقال للسؤال السابق
+// ========================
+
 function goToPrev() {
+
   if (currentIndex > 0) {
+
     currentIndex--;
+
     renderCurrentQuestion();
+
   }
 }
 
-// بناء قسم مراجعة الأسئلة الخاطئة
+// ========================
+// مراجعة الأسئلة الخاطئة
+// ========================
+
 function renderWrongAnswersReview() {
+
   reviewSection.innerHTML = "";
 
-  // جمع الأسئلة التي أُجيب عليها بشكل خاطئ (أو لم تُجب)
   const wrongList = [];
+
   for (let i = 0; i < questions.length; i++) {
+
     const q = questions[i];
+
     const given = userAnswers[i];
-    if (given === null || given !== q.correct) {
-      wrongList.push({ index: i, question: q, given: given });
+
+    if (
+      given === null ||
+      given !== q.correct
+    ) {
+
+      wrongList.push({
+        index: i,
+        question: q,
+        given: given
+      });
+
     }
   }
 
   if (wrongList.length === 0) {
-    const allCorrectDiv = document.createElement("div");
-    allCorrectDiv.className = "review-all-correct";
-    allCorrectDiv.textContent = "🎉 ما شاء الله! أجبت على جميع الأسئلة بشكل صحيح، لا توجد أخطاء لمراجعتها.";
+
+    const allCorrectDiv =
+      document.createElement("div");
+
+    allCorrectDiv.className =
+      "review-all-correct";
+
+    allCorrectDiv.textContent =
+      "🎉 ما شاء الله! أجبت على جميع الأسئلة بشكل صحيح، لا توجد أخطاء لمراجعتها.";
+
     reviewSection.appendChild(allCorrectDiv);
+
     return;
   }
 
-  const heading = document.createElement("h3");
-  heading.textContent = `📝 مراجعة الأسئلة الخاطئة (${wrongList.length})`;
+  const heading =
+    document.createElement("h3");
+
+  heading.textContent =
+    `📝 مراجعة الأسئلة الخاطئة (${wrongList.length})`;
+
   reviewSection.appendChild(heading);
 
   wrongList.forEach(item => {
-    const box = document.createElement("div");
+
+    const box =
+      document.createElement("div");
+
     box.className = "review-item";
 
-    const qLine = document.createElement("div");
+    const qLine =
+      document.createElement("div");
+
     qLine.className = "review-q";
-    qLine.textContent = `${item.index + 1}. ${item.question.q}`;
+
+    qLine.textContent =
+      `${item.index + 1}. ${item.question.q}`;
+
     box.appendChild(qLine);
 
-    const yourLine = document.createElement("div");
-    yourLine.className = "review-line review-your-answer";
+    const yourLine =
+      document.createElement("div");
+
+    yourLine.className =
+      "review-line review-your-answer";
+
     if (item.given === null) {
-      yourLine.innerHTML = `إجابتك: <span>لم تتم الإجابة</span>`;
+
+      yourLine.innerHTML =
+        `إجابتك: <span>لم تتم الإجابة</span>`;
+
     } else {
-      yourLine.innerHTML = `إجابتك: <span>${item.given}</span>`;
+
+      yourLine.innerHTML =
+        `إجابتك: <span>${item.given}</span>`;
+
     }
+
     box.appendChild(yourLine);
 
-    const correctLine = document.createElement("div");
-    correctLine.className = "review-line review-correct-answer";
-    correctLine.textContent = `الإجابة الصحيحة: ${item.question.correct}`;
+    const correctLine =
+      document.createElement("div");
+
+    correctLine.className =
+      "review-line review-correct-answer";
+
+    correctLine.textContent =
+      `الإجابة الصحيحة: ${item.question.correct}`;
+
     box.appendChild(correctLine);
 
     if (item.question.explanation) {
-      const explainLine = document.createElement("div");
-      explainLine.className = "review-explain";
-      explainLine.textContent = item.question.explanation;
+
+      const explainLine =
+        document.createElement("div");
+
+      explainLine.className =
+        "review-explain";
+
+      explainLine.textContent =
+        item.question.explanation;
+
       box.appendChild(explainLine);
     }
 
     reviewSection.appendChild(box);
+
   });
 }
 
-// عرض نتيجة الاختبار النهائية
+// ========================
+// عرض النتيجة النهائية
+// ========================
+
 function showFinalResult() {
-  // إخفاء واجهة الأسئلة وإظهار النتيجة
+
   quizBox.style.display = "none";
-  document.querySelector(".navigation").style.display = "none";
 
-  const totalScoreFinal = computeScore();
-  const percentTotal = Math.round((totalScoreFinal / questions.length) * 100);
+  document.querySelector(".navigation").style.display =
+    "none";
 
-  finalScoreSpan.textContent = `${totalScoreFinal} / ${questions.length}`;
+  document.querySelector(".question-jumper").style.display =
+    "none";
+
+  const totalScoreFinal =
+    computeScore();
+
+  const percentTotal =
+    Math.round(
+      (totalScoreFinal / questions.length) * 100
+    );
+
+  finalScoreSpan.textContent =
+    `${totalScoreFinal} / ${questions.length}`;
 
   let gradeMessage = "";
-  if (percentTotal >= 90) gradeMessage = "ممتاز 🏆";
-  else if (percentTotal >= 75) gradeMessage = "جيد جداً ⭐";
-  else if (percentTotal >= 60) gradeMessage = "جيد 👍";
-  else gradeMessage = "يحتاج مراجعة 📚";
 
-  gradeSpan.textContent = `${gradeMessage} - ${percentTotal}%`;
+  if (percentTotal >= 90)
+    gradeMessage = "ممتاز 🏆";
 
-  // عرض مراجعة الأسئلة الخاطئة
+  else if (percentTotal >= 75)
+    gradeMessage = "جيد جداً ⭐";
+
+  else if (percentTotal >= 60)
+    gradeMessage = "جيد 👍";
+
+  else
+    gradeMessage = "يحتاج مراجعة 📚";
+
+  gradeSpan.textContent =
+    `${gradeMessage} - ${percentTotal}%`;
+
   renderWrongAnswersReview();
 
   resultBox.style.display = "block";
 }
 
-// إعادة ضبط الاختبار بالكامل
+// ========================
+// إعادة الاختبار بالكامل
+// ========================
+
 function resetQuiz() {
-  // إعادة تعيين البيانات
-  userAnswers = new Array(questions.length).fill(null);
-  shuffledOptionsCache = new Array(questions.length).fill(null);
+
+  userAnswers =
+    new Array(questions.length).fill(null);
+
+  shuffledOptionsCache =
+    new Array(questions.length).fill(null);
+
   currentIndex = 0;
 
-  // إظهار صندوق الأسئلة وإخفاء النتيجة
+  // إظهار صندوق الأسئلة
   quizBox.style.display = "block";
-  document.querySelector(".navigation").style.display = "flex";
+
+  document.querySelector(".navigation").style.display =
+    "flex";
+
+  document.querySelector(".question-jumper").style.display =
+    "flex";
+
   resultBox.style.display = "none";
+
   reviewSection.innerHTML = "";
 
-  // إعادة تعيين الشريط والعدادات
+  // إعادة القائمة للسؤال الأول
+  questionSelect.value = 0;
+
   updateStatsAndProgress();
+
   renderCurrentQuestion();
 }
 
+// ========================
 // ربط الأحداث
+// ========================
+
 prevBtn.onclick = goToPrev;
+
 nextBtn.onclick = goToNext;
+
 restartBtn.onclick = () => resetQuiz();
 
+// ========================
 // بدء الاختبار لأول مرة
+// ========================
+
+buildQuestionSelector();
+
 renderCurrentQuestion();
 
-// إضافة تحسين: في حال عدم ظهور أي سؤال لأي سبب نتأكد من ظهوره
+// ========================
+// تحسين إضافي
+// ========================
+
 window.addEventListener("load", () => {
-  if (questions.length > 0 && questionEl.innerText.trim() === "") {
+
+  if (
+    questions.length > 0 &&
+    questionEl.innerText.trim() === ""
+  ) {
+
     renderCurrentQuestion();
+
   }
+
 });
+
 </script>
+
 </body>
 </html>
